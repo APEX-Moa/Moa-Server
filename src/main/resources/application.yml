@@ -1,0 +1,57 @@
+# ============================================================
+# Moa 백엔드 기본 설정 (dev 프로파일)
+#   - 아무 프로파일도 지정하지 않으면 이 설정(H2 인메모리)이 적용됩니다.
+#   - 운영은 application-prod.yml 참고 (PostgreSQL)
+# ============================================================
+spring:
+  application:
+    name: moa-backend
+
+  # --- 개발용 H2 인메모리 DB ---
+  datasource:
+    url: jdbc:h2:mem:moa;DB_CLOSE_DELAY=-1   # 앱이 살아있는 동안 데이터 유지
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: update            # 개발 편의를 위해 엔티티 기준으로 스키마 자동 생성/갱신
+    open-in-view: false           # 지연로딩으로 인한 예기치 않은 쿼리 방지 (권장)
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+
+  # --- H2 웹 콘솔 (개발용) ---
+  #   접속: http://localhost:8080/h2  (JDBC URL: jdbc:h2:mem:moa)
+  h2:
+    console:
+      enabled: true
+      path: /h2
+
+server:
+  port: 8080
+
+# ============================================================
+# Moa 커스텀 설정 (MoaProperties 로 바인딩)
+# ============================================================
+moa:
+  school-name: 광주소프트웨어마이스터고
+  jwt:
+    # 개발용 기본 시크릿(길게). 운영에서는 반드시 환경변수로 덮어쓰세요.
+    #   예) MOA_JWT_SECRET=... 또는 moa.jwt.secret=...
+    secret: moa-dev-secret-please-change-this-to-a-long-random-value-at-least-64-bytes-1234567890
+    expiry-hours: 12
+  # 야자 교시 정의. time 형식은 "HH:MM – HH:MM" (en dash) 로 통일 → 출석 시간 판정에 사용
+  periods:
+    - id: p1
+      label: 야자 1교시
+      time: "18:30 – 20:00"
+    - id: p2
+      label: 야자 2교시
+      time: "20:10 – 21:40"
+
+logging:
+  level:
+    kr.moa: INFO
