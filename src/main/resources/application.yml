@@ -1,18 +1,21 @@
 # ============================================================
 # Moa 백엔드 기본 설정 (dev 프로파일)
-#   - 아무 프로파일도 지정하지 않으면 이 설정(H2 인메모리)이 적용됩니다.
-#   - 운영은 application-prod.yml 참고 (PostgreSQL)
+#   - 아무 프로파일도 지정하지 않으면 이 설정이 적용됩니다.
+#   - 로컬 Docker Postgres를 사용합니다 (H2 사용 안 함).
+#     사전에 아래 명령으로 컨테이너를 띄워두세요:
+#     docker run --name moa-postgres -e POSTGRES_USER=moa -e POSTGRES_PASSWORD=moa1234 -e POSTGRES_DB=moa -p 5432:5432 -d postgres:16
+#   - 운영은 application-prod.yml 참고 (환경변수로 다른 Postgres 접속)
 # ============================================================
 spring:
   application:
     name: moa-backend
 
-  # --- 개발용 H2 인메모리 DB ---
+  # --- 로컬 Postgres (Docker) ---
   datasource:
-    url: jdbc:h2:mem:moa;DB_CLOSE_DELAY=-1   # 앱이 살아있는 동안 데이터 유지
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:postgresql://localhost:5432/moa
+    driver-class-name: org.postgresql.Driver
+    username: moa
+    password: moa1234
 
   jpa:
     hibernate:
@@ -21,14 +24,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    show-sql: false
-
-  # --- H2 웹 콘솔 (개발용) ---
-  #   접속: http://localhost:8080/h2  (JDBC URL: jdbc:h2:mem:moa)
-  h2:
-    console:
-      enabled: true
-      path: /h2
+    show-sql: true                # 로컬에서는 쿼리 로그를 보면서 테스트
 
 server:
   port: 8080
