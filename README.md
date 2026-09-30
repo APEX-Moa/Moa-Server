@@ -110,3 +110,5 @@ kr.moa
    ├─ dto      # 요청/응답 record
    └─ *Controller, GlobalExceptionHandler, ApiException
 ```
+
+<!-- PR workflow test -->
